@@ -9,9 +9,9 @@
 <body>
   <main class="app-shell">
     <section class="hero">
-      <p class="eyebrow">AI Expression Playground</p>
+      <p class="eyebrow">Creative Journaling Tool</p>
       <h1>Journal Scrapbook Buddy</h1>
-      <p class="subtitle">Write how you feel, choose your colors, and turn the moment into a saved scrapbook page.</p>
+      <p class="subtitle">Write how you feel, decorate the page, and save the moment into a growing scrapbook.</p>
     </section>
 
     <section class="workspace">
@@ -29,9 +29,25 @@
           <button type="button" class="color-dot" data-color="#fff6df" aria-label="Cream"></button>
           <button type="button" class="color-dot" data-color="#ffd6a5" aria-label="Peach"></button>
           <button type="button" class="color-dot" data-color="#2f6f88" aria-label="Deep teal"></button>
+          <button type="button" class="color-dot" data-color="#ffadad" aria-label="Coral"></button>
+          <button type="button" class="color-dot" data-color="#caffbf" aria-label="Mint"></button>
+          <button type="button" class="color-dot" data-color="#fdffb6" aria-label="Butter yellow"></button>
+          <button type="button" class="color-dot" data-color="#a0c4ff" aria-label="Periwinkle"></button>
         </div>
 
-        <p class="mini-label">Choose a vibe</p>
+        <p class="mini-label">Add stickers</p>
+        <div class="sticker-grid" aria-label="Sticker choices">
+          <button type="button" class="sticker active" data-sticker="🌷">🌷</button>
+          <button type="button" class="sticker active" data-sticker="⭐">⭐</button>
+          <button type="button" class="sticker" data-sticker="🧸">🧸</button>
+          <button type="button" class="sticker" data-sticker="🦋">🦋</button>
+          <button type="button" class="sticker" data-sticker="☕">☕</button>
+          <button type="button" class="sticker" data-sticker="🌙">🌙</button>
+          <button type="button" class="sticker" data-sticker="🍓">🍓</button>
+          <button type="button" class="sticker" data-sticker="✨">✨</button>
+        </div>
+
+        <p class="mini-label">Choose a page mood</p>
         <div class="chip-grid" aria-label="Journal vibe">
           <button type="button" class="chip active" data-vibe="gentle">Gentle Reset</button>
           <button type="button" class="chip" data-vibe="dreamy">Dreamy</button>
@@ -49,7 +65,7 @@
         </div>
         <h2 id="scrapTitle">Soft Landing</h2>
         <div class="palette" id="palette"></div>
-        <div class="mascot" id="mascot">🐰📓</div>
+        <div class="sticker-strip" id="stickerStrip">🌷 ⭐</div>
         <p class="caption" id="caption">“You can move gently and still move forward.”</p>
 
         <div class="journal-preview">
@@ -59,8 +75,8 @@
 
         <div class="detail-grid">
           <article>
-            <h3>AI-style reflection</h3>
-            <p id="reflection">This moment is asking for patience, not pressure.</p>
+            <h3>Page note</h3>
+            <p id="pageNote">This page is a soft place to put the feeling down.</p>
           </article>
           <article>
             <h3>Tiny next step</h3>
@@ -81,7 +97,6 @@
           <p class="eyebrow">Your growing book</p>
           <h2 id="bookTitle">Saved journal scraps</h2>
         </div>
-        <button class="clear-button" id="clearBook" type="button">Clear book</button>
       </div>
       <div class="book-grid" id="bookGrid"></div>
     </section>
