@@ -89,7 +89,8 @@ textarea:focus {
 }
 
 .color-grid,
-.chip-grid {
+.chip-grid,
+.sticker-grid {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
@@ -105,7 +106,8 @@ textarea:focus {
   box-shadow: 0 8px 18px rgba(124, 76, 94, 0.1);
 }
 
-.color-dot.active {
+.color-dot.active,
+.sticker.active {
   outline: 3px solid #2e2428;
   outline-offset: 3px;
 }
@@ -118,16 +120,30 @@ textarea:focus {
 .color-dot[data-color="#fff6df"] { background: #fff6df; }
 .color-dot[data-color="#ffd6a5"] { background: #ffd6a5; }
 .color-dot[data-color="#2f6f88"] { background: #2f6f88; }
+.color-dot[data-color="#ffadad"] { background: #ffadad; }
+.color-dot[data-color="#caffbf"] { background: #caffbf; }
+.color-dot[data-color="#fdffb6"] { background: #fdffb6; }
+.color-dot[data-color="#a0c4ff"] { background: #a0c4ff; }
 
 .chip,
+.sticker,
 .primary-button,
 .secondary-button,
-.clear-button {
+.danger-button,
+.view-button {
   border: 0;
   border-radius: 999px;
   cursor: pointer;
   font: inherit;
   font-weight: 800;
+}
+
+.sticker {
+  background: #fffafc;
+  border: 1px solid #efd1dc;
+  font-size: 1.35rem;
+  height: 44px;
+  width: 44px;
 }
 
 .chip {
@@ -144,7 +160,8 @@ textarea:focus {
 
 .primary-button,
 .secondary-button,
-.clear-button {
+.danger-button,
+.view-button {
   background: #2e2428;
   color: white;
   padding: 14px 18px;
@@ -155,10 +172,16 @@ textarea:focus {
 }
 
 .secondary-button,
-.clear-button {
+.view-button {
   background: #fff1f6;
   color: #79364e;
   border: 1px solid #efd1dc;
+}
+
+.danger-button {
+  background: #fff5f5;
+  color: #9d3347;
+  border: 1px solid #f0c4cc;
 }
 
 .card-topline,
@@ -197,13 +220,14 @@ textarea:focus {
   border: 1px solid rgba(46, 36, 40, 0.08);
 }
 
-.mascot {
-  font-size: 5rem;
-  text-align: center;
-  padding: 18px;
+.sticker-strip {
   background: #fff6df;
   border-radius: 28px;
+  font-size: 3.2rem;
+  letter-spacing: 0.08em;
   margin: 18px 0;
+  padding: 22px;
+  text-align: center;
 }
 
 .caption {
@@ -245,7 +269,8 @@ textarea:focus {
   gap: 14px;
 }
 
-.action-row {
+.action-row,
+.card-actions {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
@@ -268,11 +293,12 @@ textarea:focus {
 }
 
 .book-card {
-  min-height: 160px;
+  min-height: 185px;
 }
 
 .book-card .mini-palette {
   display: flex;
+  flex-wrap: wrap;
   gap: 6px;
   margin: 10px 0;
 }
@@ -282,6 +308,11 @@ textarea:focus {
   height: 28px;
   border-radius: 50%;
   border: 1px solid rgba(46, 36, 40, 0.08);
+}
+
+.book-card .mini-stickers {
+  font-size: 1.5rem;
+  margin: 8px 0;
 }
 
 @media print {
@@ -315,6 +346,7 @@ textarea:focus {
   .workspace,
   .detail-grid,
   .action-row,
+  .card-actions,
   .book-grid {
     grid-template-columns: 1fr;
   }
