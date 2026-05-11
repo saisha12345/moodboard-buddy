@@ -1,40 +1,38 @@
 const form = document.querySelector('#journalForm');
 const chips = document.querySelectorAll('.chip');
 const colorDots = document.querySelectorAll('.color-dot');
+const stickerButtons = document.querySelectorAll('.sticker');
 const palette = document.querySelector('#palette');
 const bookGrid = document.querySelector('#bookGrid');
 
 let selectedVibe = 'gentle';
 let selectedColors = ['#fff1f6', '#f6c7d8'];
+let selectedStickers = ['🌷', '⭐'];
 let currentScrap = null;
 
 const vibeContent = {
   gentle: {
     title: 'Soft Landing',
-    mascot: '🐰📓',
     caption: 'You can move gently and still move forward.',
-    reflection: 'This moment is asking for patience, not pressure.',
+    pageNote: 'This page is a soft place to put the feeling down.',
     nextStep: 'Pick one small action and give yourself credit for starting.'
   },
   dreamy: {
     title: 'Little Dream Archive',
-    mascot: '🌙🧸',
     caption: 'Save the feeling before it floats away.',
-    reflection: 'There is something tender here worth noticing and keeping.',
-    nextStep: 'Write one sentence you want your future self to remember.'
+    pageNote: 'This page holds the tiny details your future self might want to remember.',
+    nextStep: 'Write one sentence you want your future self to keep.'
   },
   brave: {
     title: 'Brave Little Page',
-    mascot: '🐯✨',
     caption: 'Tiny courage still counts.',
-    reflection: 'You are allowed to feel nervous and still choose the next step.',
+    pageNote: 'This page can hold both the nerves and the courage at the same time.',
     nextStep: 'Name the thing you are avoiding, then make it 10% smaller.'
   },
   cozy: {
     title: 'Cozy Focus Scrap',
-    mascot: '🐻☕',
     caption: 'Comfort can be part of the plan.',
-    reflection: 'Your energy does not need to be perfect to be useful.',
+    pageNote: 'This page is for making the day feel softer without giving up on it.',
     nextStep: 'Set a small timer, make your space soft, and begin with one task.'
   }
 };
@@ -69,32 +67,35 @@ function renderPalette(colors) {
 function renderScrap(scrap) {
   document.querySelector('#scrapDate').textContent = scrap.date;
   document.querySelector('#scrapTitle').textContent = scrap.title;
-  document.querySelector('#mascot').textContent = scrap.mascot;
   document.querySelector('#caption').textContent = `“${scrap.caption}”`;
   document.querySelector('#journalPreview').textContent = scrap.entry;
-  document.querySelector('#reflection').textContent = scrap.reflection;
+  document.querySelector('#pageNote').textContent = scrap.pageNote;
   document.querySelector('#nextStep').textContent = scrap.nextStep;
+  document.querySelector('#stickerStrip').textContent = scrap.stickers.join(' ');
   renderPalette(scrap.colors);
 }
 
 function makeScrap(entry) {
   const vibe = vibeContent[selectedVibe];
   const trimmedEntry = entry.trim();
-  const personalReflection = trimmedEntry.length > 0
-    ? `${vibe.reflection} I noticed this from your entry: “${trimmedEntry.slice(0, 95)}${trimmedEntry.length > 95 ? '...' : ''}”`
-    : vibe.reflection;
 
   return {
     id: Date.now(),
     date: todayLabel(),
     title: vibe.title,
-    mascot: vibe.mascot,
     caption: vibe.caption,
     entry: trimmedEntry || 'A quiet little moment worth saving.',
-    reflection: personalReflection,
+    pageNote: vibe.pageNote,
     nextStep: vibe.nextStep,
-    colors: [...selectedColors]
+    colors: [...selectedColors],
+    stickers: [...selectedStickers]
   };
+}
+
+function deleteScrap(id) {
+  const book = getBook().filter((scrap) => scrap.id !== id);
+  saveBook(book);
+  renderBook();
 }
 
 function renderBook() {
@@ -114,13 +115,29 @@ function renderBook() {
     card.className = 'book-card';
 
     const miniPalette = scrap.colors.map((color) => `<span class="mini-swatch" style="background:${color}"></span>`).join('');
+    const stickers = (scrap.stickers || []).join(' ');
 
     card.innerHTML = `
-      <h3>${scrap.mascot} ${scrap.title}</h3>
+      <h3>${scrap.title}</h3>
       <p><strong>${scrap.date}</strong></p>
       <div class="mini-palette">${miniPalette}</div>
-      <p>${scrap.entry.slice(0, 120)}${scrap.entry.length > 120 ? '...' : ''}</p>
+      <div class="mini-stickers">${stickers}</div>
+      <p>${scrap.entry.slice(0, 100)}${scrap.entry.length > 100 ? '...' : ''}</p>
+      <div class="card-actions">
+        <button class="view-button" type="button" data-action="view">View</button>
+        <button class="danger-button" type="button" data-action="delete">Delete</button>
+      </div>
     `;
+
+    card.querySelector('[data-action="view"]').addEventListener('click', () => {
+      currentScrap = scrap;
+      renderScrap(scrap);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    card.querySelector('[data-action="delete"]').addEventListener('click', () => {
+      deleteScrap(scrap.id);
+    });
 
     bookGrid.appendChild(card);
   });
@@ -152,6 +169,22 @@ colorDots.forEach((dot) => {
   });
 });
 
+stickerButtons.forEach((button) => {
+  button.addEventListener('click', () => {
+    const sticker = button.dataset.sticker;
+
+    if (selectedStickers.includes(sticker)) {
+      if (selectedStickers.length > 1) {
+        selectedStickers = selectedStickers.filter((item) => item !== sticker);
+        button.classList.remove('active');
+      }
+    } else {
+      selectedStickers.push(sticker);
+      button.classList.add('active');
+    }
+  });
+});
+
 form.addEventListener('submit', (event) => {
   event.preventDefault();
   currentScrap = makeScrap(document.querySelector('#journalText').value);
@@ -165,7 +198,7 @@ document.querySelector('#saveScrap').addEventListener('click', () => {
   }
 
   const book = getBook();
-  book.push(currentScrap);
+  book.push({ ...currentScrap, id: Date.now() });
   saveBook(book);
   renderBook();
 
@@ -177,11 +210,6 @@ document.querySelector('#saveScrap').addEventListener('click', () => {
 
 document.querySelector('#downloadPdf').addEventListener('click', () => {
   window.print();
-});
-
-document.querySelector('#clearBook').addEventListener('click', () => {
-  localStorage.removeItem('journalScrapBook');
-  renderBook();
 });
 
 currentScrap = makeScrap('Start by writing what you are carrying today.');
