@@ -3,56 +3,87 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Moodboard Buddy</title>
+  <title>Journal Scrapbook Buddy</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <main class="app-shell">
     <section class="hero">
       <p class="eyebrow">AI Expression Playground</p>
-      <h1>Moodboard Buddy</h1>
-      <p class="subtitle">Turn your current feeling into a cute, shareable moodboard card.</p>
+      <h1>Journal Scrapbook Buddy</h1>
+      <p class="subtitle">Write how you feel, choose your colors, and turn the moment into a saved scrapbook page.</p>
     </section>
 
     <section class="workspace">
-      <form id="moodForm" class="input-card">
-        <label for="moodText">How are you feeling today?</label>
-        <textarea id="moodText" placeholder="Example: cozy but anxious about applying to jobs..." required></textarea>
+      <form id="journalForm" class="input-card">
+        <label for="journalText">What are you carrying today?</label>
+        <textarea id="journalText" placeholder="Example: I feel excited but overwhelmed. I want to romanticize applying to jobs and still be kind to myself..." required></textarea>
 
-        <p class="mini-label">Choose a world</p>
-        <div class="chip-grid">
-          <button type="button" class="chip active" data-style="soft">Soft Girl Focus</button>
-          <button type="button" class="chip" data-style="ocean">Ocean Calm</button>
-          <button type="button" class="chip" data-style="city">City Night</button>
-          <button type="button" class="chip" data-style="fairy">Fairy Desk</button>
+        <p class="mini-label">Choose your colors</p>
+        <div class="color-grid" aria-label="Color choices">
+          <button type="button" class="color-dot active" data-color="#fff1f6" aria-label="Blush pink"></button>
+          <button type="button" class="color-dot active" data-color="#f6c7d8" aria-label="Rose"></button>
+          <button type="button" class="color-dot" data-color="#d8f7b7" aria-label="Soft green"></button>
+          <button type="button" class="color-dot" data-color="#b9e6f2" aria-label="Ocean blue"></button>
+          <button type="button" class="color-dot" data-color="#c9b5ff" aria-label="Lavender"></button>
+          <button type="button" class="color-dot" data-color="#fff6df" aria-label="Cream"></button>
+          <button type="button" class="color-dot" data-color="#ffd6a5" aria-label="Peach"></button>
+          <button type="button" class="color-dot" data-color="#2f6f88" aria-label="Deep teal"></button>
         </div>
 
-        <button class="primary-button" type="submit">Generate my moodboard</button>
+        <p class="mini-label">Choose a vibe</p>
+        <div class="chip-grid" aria-label="Journal vibe">
+          <button type="button" class="chip active" data-vibe="gentle">Gentle Reset</button>
+          <button type="button" class="chip" data-vibe="dreamy">Dreamy</button>
+          <button type="button" class="chip" data-vibe="brave">Brave Mode</button>
+          <button type="button" class="chip" data-vibe="cozy">Cozy Focus</button>
+        </div>
+
+        <button class="primary-button" type="submit">Create my journal scrap</button>
       </form>
 
-      <section class="result-card" aria-live="polite">
+      <section class="result-card" id="scrapCard" aria-live="polite">
         <div class="card-topline">
-          <span id="moodLabel">Your Moodboard</span>
+          <span id="scrapDate">Today's scrap</span>
           <span>✦</span>
         </div>
-        <h2 id="moodName">Cozy Comeback</h2>
+        <h2 id="scrapTitle">Soft Landing</h2>
         <div class="palette" id="palette"></div>
-        <div class="mascot" id="mascot">🐰💻</div>
-        <p class="caption" id="caption">“soft life, hard goals”</p>
+        <div class="mascot" id="mascot">🐰📓</div>
+        <p class="caption" id="caption">“You can move gently and still move forward.”</p>
+
+        <div class="journal-preview">
+          <h3>Your words</h3>
+          <p id="journalPreview">Start by writing what you are carrying today.</p>
+        </div>
 
         <div class="detail-grid">
           <article>
-            <h3>Focus ritual</h3>
-            <p id="ritual">Apply to 2 roles, then take a matcha break.</p>
+            <h3>AI-style reflection</h3>
+            <p id="reflection">This moment is asking for patience, not pressure.</p>
           </article>
           <article>
-            <h3>Playlist vibe</h3>
-            <p id="playlist">Rainy cafe + acoustic focus.</p>
+            <h3>Tiny next step</h3>
+            <p id="nextStep">Pick one small action and give yourself credit for starting.</p>
           </article>
         </div>
 
-        <button class="secondary-button" id="copyCard" type="button">Copy share text</button>
+        <div class="action-row">
+          <button class="secondary-button" id="saveScrap" type="button">Save to my book</button>
+          <button class="secondary-button" id="downloadPdf" type="button">Save as PDF</button>
+        </div>
       </section>
+    </section>
+
+    <section class="book-section" aria-labelledby="bookTitle">
+      <div class="book-heading">
+        <div>
+          <p class="eyebrow">Your growing book</p>
+          <h2 id="bookTitle">Saved journal scraps</h2>
+        </div>
+        <button class="clear-button" id="clearBook" type="button">Clear book</button>
+      </div>
+      <div class="book-grid" id="bookGrid"></div>
     </section>
   </main>
 
