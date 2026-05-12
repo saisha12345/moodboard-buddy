@@ -53,7 +53,8 @@ h1 {
 
 .input-card,
 .result-card,
-.book-section {
+.book-section,
+.experiment-section {
   background: rgba(255, 255, 255, 0.82);
   border: 1px solid rgba(218, 171, 190, 0.55);
   border-radius: 32px;
@@ -184,6 +185,13 @@ textarea:focus {
   border: 1px solid #f0c4cc;
 }
 
+.experiment-helper {
+  color: #8f6470;
+  font-size: 0.82rem;
+  margin: 10px 0 0;
+  text-align: center;
+}
+
 .card-topline,
 .book-heading {
   display: flex;
@@ -238,7 +246,8 @@ textarea:focus {
 
 .journal-preview,
 .detail-grid article,
-.book-card {
+.book-card,
+.experiment-card {
   background: #fffafc;
   border: 1px solid #f1dce4;
   border-radius: 22px;
@@ -251,14 +260,18 @@ textarea:focus {
 
 .journal-preview h3,
 .detail-grid h3,
-.book-card h3 {
+.book-card h3,
+.experiment-card h3 {
   margin: 0 0 6px;
   color: #79364e;
 }
 
 .journal-preview p,
 .detail-grid p,
-.book-card p {
+.book-card p,
+.experiment-section p,
+.experiment-card p,
+.experiment-card li {
   margin: 0;
   color: #66565d;
 }
@@ -277,19 +290,26 @@ textarea:focus {
   margin-top: 20px;
 }
 
-.book-section {
+.book-section,
+.experiment-section {
   margin-top: 24px;
 }
 
-.book-heading h2 {
-  margin: 0;
+.book-heading h2,
+.experiment-section h2 {
+  margin: 0 0 8px;
 }
 
-.book-grid {
+.book-grid,
+.experiment-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
   margin-top: 20px;
+}
+
+.experiment-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .book-card {
@@ -315,6 +335,20 @@ textarea:focus {
   margin: 8px 0;
 }
 
+.experiment-card.current-variant {
+  background: #fff1f6;
+  border-color: #d8739c;
+}
+
+.experiment-card ul {
+  padding-left: 18px;
+  margin: 10px 0 0;
+}
+
+.experiment-card li + li {
+  margin-top: 6px;
+}
+
 @media print {
   body {
     background: white;
@@ -323,6 +357,7 @@ textarea:focus {
   .hero,
   .input-card,
   .book-section,
+  .experiment-section,
   .action-row {
     display: none;
   }
@@ -347,7 +382,8 @@ textarea:focus {
   .detail-grid,
   .action-row,
   .card-actions,
-  .book-grid {
+  .book-grid,
+  .experiment-grid {
     grid-template-columns: 1fr;
   }
 }
