@@ -4,6 +4,9 @@ const colorDots = document.querySelectorAll('.color-dot');
 const stickerButtons = document.querySelectorAll('.sticker');
 const palette = document.querySelector('#palette');
 const bookGrid = document.querySelector('#bookGrid');
+const generateButton = document.querySelector('#generateButton');
+const experimentHelper = document.querySelector('#experimentHelper');
+const experimentGrid = document.querySelector('#experimentGrid');
 
 let selectedVibe = 'gentle';
 let selectedColors = ['#fff1f6', '#f6c7d8'];
@@ -36,6 +39,96 @@ const vibeContent = {
     nextStep: 'Set a small timer, make your space soft, and begin with one task.'
   }
 };
+
+const experimentConfig = {
+  A: {
+    name: 'Direct utility copy',
+    buttonText: 'Create my journal scrap',
+    helperText: 'Variant A uses direct product language.'
+  },
+  B: {
+    name: 'Expressive scrapbook copy',
+    buttonText: 'Turn this into a scrapbook page',
+    helperText: 'Variant B uses more expressive, outcome-focused language.'
+  }
+};
+
+function getExperimentVariant() {
+  let variant = localStorage.getItem('journalExperimentVariant');
+  if (!variant) {
+    variant = Math.random() < 0.5 ? 'A' : 'B';
+    localStorage.setItem('journalExperimentVariant', variant);
+  }
+  return variant;
+}
+
+const experimentVariant = getExperimentVariant();
+
+function getExperimentMetrics() {
+  return JSON.parse(localStorage.getItem('journalExperimentMetrics') || '{}');
+}
+
+function saveExperimentMetrics(metrics) {
+  localStorage.setItem('journalExperimentMetrics', JSON.stringify(metrics));
+}
+
+function trackExperimentEvent(eventName) {
+  const metrics = getExperimentMetrics();
+  if (!metrics[experimentVariant]) {
+    metrics[experimentVariant] = { visits: 0, creates: 0, saves: 0, pdfExports: 0, views: 0, deletes: 0 };
+  }
+  metrics[experimentVariant][eventName] += 1;
+  saveExperimentMetrics(metrics);
+  renderExperimentPanel();
+}
+
+function initializeExperiment() {
+  const config = experimentConfig[experimentVariant];
+  generateButton.textContent = config.buttonText;
+  experimentHelper.textContent = config.helperText;
+
+  const metrics = getExperimentMetrics();
+  if (!metrics[experimentVariant]) {
+    metrics[experimentVariant] = { visits: 0, creates: 0, saves: 0, pdfExports: 0, views: 0, deletes: 0 };
+  }
+  const visitKey = `journalExperimentVisit_${experimentVariant}`;
+  if (!sessionStorage.getItem(visitKey)) {
+    metrics[experimentVariant].visits += 1;
+    sessionStorage.setItem(visitKey, 'true');
+  }
+  saveExperimentMetrics(metrics);
+  renderExperimentPanel();
+}
+
+function conversionRate(numerator, denominator) {
+  if (!denominator) return '0%';
+  return `${Math.round((numerator / denominator) * 100)}%`;
+}
+
+function renderExperimentPanel() {
+  if (!experimentGrid) return;
+  const metrics = getExperimentMetrics();
+  experimentGrid.innerHTML = '';
+
+  ['A', 'B'].forEach((variant) => {
+    const data = metrics[variant] || { visits: 0, creates: 0, saves: 0, pdfExports: 0, views: 0, deletes: 0 };
+    const card = document.createElement('article');
+    card.className = `experiment-card ${variant === experimentVariant ? 'current-variant' : ''}`;
+    card.innerHTML = `
+      <h3>Variant ${variant}: ${experimentConfig[variant].name}</h3>
+      <p><strong>Button:</strong> ${experimentConfig[variant].buttonText}</p>
+      <ul>
+        <li>Visits: ${data.visits}</li>
+        <li>Creates: ${data.creates} (${conversionRate(data.creates, data.visits)} visit-to-create)</li>
+        <li>Saves: ${data.saves} (${conversionRate(data.saves, data.creates)} create-to-save)</li>
+        <li>PDF exports: ${data.pdfExports}</li>
+        <li>Saved scrap views: ${data.views}</li>
+        <li>Deletes: ${data.deletes}</li>
+      </ul>
+    `;
+    experimentGrid.appendChild(card);
+  });
+}
 
 function todayLabel() {
   return new Date().toLocaleDateString(undefined, {
@@ -95,6 +188,7 @@ function makeScrap(entry) {
 function deleteScrap(id) {
   const book = getBook().filter((scrap) => scrap.id !== id);
   saveBook(book);
+  trackExperimentEvent('deletes');
   renderBook();
 }
 
@@ -132,6 +226,7 @@ function renderBook() {
     card.querySelector('[data-action="view"]').addEventListener('click', () => {
       currentScrap = scrap;
       renderScrap(scrap);
+      trackExperimentEvent('views');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
@@ -189,6 +284,7 @@ form.addEventListener('submit', (event) => {
   event.preventDefault();
   currentScrap = makeScrap(document.querySelector('#journalText').value);
   renderScrap(currentScrap);
+  trackExperimentEvent('creates');
 });
 
 document.querySelector('#saveScrap').addEventListener('click', () => {
@@ -200,6 +296,7 @@ document.querySelector('#saveScrap').addEventListener('click', () => {
   const book = getBook();
   book.push({ ...currentScrap, id: Date.now() });
   saveBook(book);
+  trackExperimentEvent('saves');
   renderBook();
 
   document.querySelector('#saveScrap').textContent = 'Saved to book!';
@@ -209,9 +306,11 @@ document.querySelector('#saveScrap').addEventListener('click', () => {
 });
 
 document.querySelector('#downloadPdf').addEventListener('click', () => {
+  trackExperimentEvent('pdfExports');
   window.print();
 });
 
 currentScrap = makeScrap('Start by writing what you are carrying today.');
 renderScrap(currentScrap);
 renderBook();
+initializeExperiment();
